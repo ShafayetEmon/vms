@@ -10,24 +10,37 @@ import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { Volunteer } from '../volunteers/volunteer.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(Volunteer)
+    private volunteerRepository: Repository<Volunteer>,
     private jwtService: JwtService,
   ) {}
+
   async handleRegistration(registerDto: RegisterDto) {
     const { email, userType } = registerDto;
     if (userType !== 'volunteer' && userType !== 'admin') {
       throw new BadRequestException('Invalid user type.');
     }
-    const checkEmailExist = await this.userRepository.findOne({
-      where: { email },
-    });
+
+    const checkEmailExist = await this.findUserByEmail(email);
+    console.log(checkEmailExist);
     if (checkEmailExist) throw new ConflictException('Email already exists.');
+
     const user = await this.userRepository.create(registerDto);
-    return this.userRepository.save(user);
+    await this.userRepository.save(user);
+
+    if (userType == 'volunteer') {
+      const volunteer = new Volunteer();
+      volunteer.email = user.email;
+      volunteer.user = user;
+      await this.volunteerRepository.save(volunteer);
+    }
+    return user;
   }
 
   async login(user: any) {
@@ -46,9 +59,7 @@ export class AuthService {
   }
 
   async validateUserCreds(email: string, password: string): Promise<any> {
-    const user = await this.userRepository.findOne({
-      where: { email },
-    });
+    const user = await this.findUserByEmail(email);
 
     if (!user) throw new BadRequestException();
 
@@ -56,5 +67,18 @@ export class AuthService {
       throw new UnauthorizedException();
 
     return user;
+  }
+
+  async findUserByEmail(email: string): Promise<User | null> {
+    return await this.userRepository.findOne({
+      where: { email },
+    });
+  }
+
+  async findVolunteerById(id: number): Promise<Volunteer | null> {
+    return await this.volunteerRepository.findOne({
+      where: { id },
+      relations: ['user'],
+    });
   }
 }

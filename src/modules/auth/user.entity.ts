@@ -4,8 +4,10 @@ import {
   Column,
   CreateDateColumn,
   BeforeInsert,
+  OneToOne,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { Volunteer } from '../volunteers/volunteer.entity';
 
 @Entity()
 export class User {
@@ -26,6 +28,9 @@ export class User {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @OneToOne(() => Volunteer, (volunteer) => volunteer.user)
+  volunteer: Volunteer;
 
   @BeforeInsert()
   async setPassword(password: string) {

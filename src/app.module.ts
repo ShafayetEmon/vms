@@ -5,7 +5,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfigAsync } from './config/typeorm.config';
-import { User } from './modules/auth/user.entity';
+import { VolunteerModule } from './modules/volunteers/volunteer.module';
 
 @Module({
   imports: [
@@ -14,7 +14,7 @@ import { User } from './modules/auth/user.entity';
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync(typeOrmConfigAsync),
-    TypeOrmModule.forFeature([User])
+    VolunteerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

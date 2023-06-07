@@ -8,14 +8,16 @@ import { LocalStrategy } from './local.strategy';
 import { jwtConfig } from 'src/config/jwt.config';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
+import { Volunteer } from '../volunteers/volunteer.entity';
 
 @Module({
   imports: [
     PassportModule,
-    TypeOrmModule.forFeature([User]),
     JwtModule.registerAsync(jwtConfig),
+    TypeOrmModule.forFeature([User, Volunteer]),
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   controllers: [AuthController],
+  exports: [AuthService],
 })
 export class AuthModule {}
