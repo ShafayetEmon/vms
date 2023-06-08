@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfigAsync } from './config/typeorm.config';
 import { VolunteerModule } from './modules/volunteers/volunteer.module';
 import { TaskModule } from './modules/tasks/task.module';
+import { VolunteerTaskModule } from './modules/volunteerTasks/volunteerTask.module';
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { TaskModule } from './modules/tasks/task.module';
     }),
     TypeOrmModule.forRootAsync(typeOrmConfigAsync),
     VolunteerModule,
-    TaskModule
+    TaskModule,
+    VolunteerTaskModule
   ],
   controllers: [AppController],
   providers: [AppService],

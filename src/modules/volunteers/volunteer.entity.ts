@@ -6,8 +6,10 @@ import {
   UpdateDateColumn,
   OneToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { User } from '../auth/user.entity';
+import { VolunteerTask } from '../volunteerTasks/volunteerTask.entity';
 
 @Entity()
 export class Volunteer {
@@ -38,4 +40,7 @@ export class Volunteer {
   @OneToOne(() => User, (user) => user.volunteer)
   @JoinColumn()
   user: User;
+
+  @OneToMany(() => VolunteerTask, (volunteerTask) => volunteerTask.volunteer)
+  volunteerTasks: VolunteerTask[];
 }
