@@ -19,7 +19,7 @@ export class AuthService {
     @InjectRepository(Volunteer)
     private volunteerRepository: Repository<Volunteer>,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   async handleRegistration(registerDto: RegisterDto) {
     const { email, userType } = registerDto;
@@ -75,10 +75,4 @@ export class AuthService {
     });
   }
 
-  async findVolunteerById(id: number): Promise<Volunteer | null> {
-    return await this.volunteerRepository.findOne({
-      where: { id },
-      relations: ['user'],
-    });
-  }
 }

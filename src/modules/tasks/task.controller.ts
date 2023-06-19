@@ -14,36 +14,36 @@ import { TaskDto } from './Task.dto';
 import { TaskService } from './task.service';
 
 @Controller('tasks')
+@UseGuards(JwtAuthGuard)
 export class TaskController {
-  constructor(private taskService: TaskService) {}
+  constructor(private taskService: TaskService) { }
 
   @Get('/')
-  @UseGuards(JwtAuthGuard, IsAdmin)
-  async getAllTask(){
+  @UseGuards(IsAdmin)
+  async getAllTask() {
     return this.taskService.getAllTask();
   }
 
   @Post('create')
-  @UseGuards(JwtAuthGuard, IsAdmin)
+  @UseGuards(IsAdmin)
   async createTask(@Body() TaskDto: TaskDto) {
     const task = await this.taskService.createTask(TaskDto);
     return { message: 'Task created successfully', task };
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
   async getTaskById(@Param('id') id) {
     return await this.taskService.getTaskById(id);
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard, IsAdmin)
+  @UseGuards(IsAdmin)
   async updateTask(@Body() taskDto: TaskDto, @Param('id') id) {
     return await this.taskService.updateTask(taskDto, id);
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard, IsAdmin)
+  @UseGuards(IsAdmin)
   async deleteTask(@Param('id') id) {
     return await this.taskService.deleteTask(id);
   }

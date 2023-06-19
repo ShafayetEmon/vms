@@ -1,23 +1,27 @@
-import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { VolunteerTaskDto } from "./volunteerTask.dto";
 import { VolunteerTaskService } from "./volunteerTask.service";
-
+import { IsAdmin } from "../auth/isAdmin";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 @Controller('volunteers/:volunteerId/tasks')
-export class VolunteerTaskController{
-  constructor(private volunteerTaskService: VolunteerTaskService){}
+@UseGuards(JwtAuthGuard)
+export class VolunteerTaskController {
+  constructor(private volunteerTaskService: VolunteerTaskService) { }
 
   @Get()
-  async getVolunteerTasks(@Param('volunteerId') id){
+  async getVolunteerTasks(@Param('volunteerId') id) {
     return this.volunteerTaskService.getVolunteerTasks(id)
   }
 
   @Post()
-  async assignTaskToVolunteer(@Body() volunterTaskDto: VolunteerTaskDto, @Param('volunteerId') id){
+  @UseGuards(IsAdmin)
+  async assignTaskToVolunteer(@Body() volunterTaskDto: VolunteerTaskDto, @Param('volunteerId') id) {
     return this.volunteerTaskService.assignTaskToVolunteer(volunterTaskDto)
   }
 
   @Delete(":taskId")
-  removeTaskForVolunteer(@Param('volunteerId') volunteerId: number, @Param('taskId') taskId: number){
+  @UseGuards(IsAdmin)
+  removeTaskForVolunteer(@Param('volunteerId') volunteerId: number, @Param('taskId') taskId: number) {
     return this.volunteerTaskService.removeTaskAssignment(volunteerId, taskId)
   }
 }

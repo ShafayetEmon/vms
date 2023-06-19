@@ -18,6 +18,5 @@ import { Volunteer } from '../volunteers/volunteer.entity';
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   controllers: [AuthController],
-  exports: [AuthService],
 })
-export class AuthModule {}
+export class AuthModule { }
