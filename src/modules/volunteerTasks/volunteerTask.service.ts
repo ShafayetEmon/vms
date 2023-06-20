@@ -37,7 +37,6 @@ export class VolunteerTaskService {
       .andWhere('volunteerTask.taskId = :taskId', { taskId })
       .getMany();
 
-    console.log(volunteerTask)
     if (volunteerTask.length === 0) {
       throw new NotFoundException('Volunteer task not found');
     }

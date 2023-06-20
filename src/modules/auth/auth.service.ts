@@ -19,7 +19,7 @@ export class AuthService {
     @InjectRepository(Volunteer)
     private volunteerRepository: Repository<Volunteer>,
     private jwtService: JwtService,
-  ) { }
+  ) {}
 
   async handleRegistration(registerDto: RegisterDto) {
     const { email, userType } = registerDto;
@@ -28,7 +28,6 @@ export class AuthService {
     }
 
     const checkEmailExist = await this.findUserByEmail(email);
-    console.log(checkEmailExist);
     if (checkEmailExist) throw new ConflictException('Email already exists.');
 
     const user = await this.userRepository.create(registerDto);
@@ -49,12 +48,17 @@ export class AuthService {
       sub: user.id,
       userType: user.userType,
     };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+    const access_token = this.jwtService.sign(payload);
+    const salt = await bcrypt.genSalt();
+    user.accessToken = await bcrypt.hash(access_token, salt);
+    await this.userRepository.save(user);
+
+    return { access_token: access_token };
   }
 
   async logout(user: any) {
+    user.accessToken = null;
+    await this.userRepository.save(user);
     return { message: 'User logged out successfully' };
   }
 
@@ -75,4 +79,9 @@ export class AuthService {
     });
   }
 
+  async findUserById(id: number): Promise<User | null> {
+    return await this.userRepository.findOne({
+      where: { id },
+    });
+  }
 }

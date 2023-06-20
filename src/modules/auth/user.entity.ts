@@ -26,6 +26,9 @@ export class User {
   @Column()
   userType: string;
 
+  @Column({ nullable: true })
+  accessToken: string;
+
   @CreateDateColumn()
   createdAt: Date;
 

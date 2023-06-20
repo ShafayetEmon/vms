@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { VolunteerTaskDto } from "./volunteerTask.dto";
 import { VolunteerTaskService } from "./volunteerTask.service";
-import { IsAdmin } from "../auth/isAdmin";
-import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { IsAdmin } from "../auth/guards/isAdmin";
+import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 @Controller('volunteers/:volunteerId/tasks')
 @UseGuards(JwtAuthGuard)
 export class VolunteerTaskController {

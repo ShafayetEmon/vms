@@ -8,8 +8,8 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { IsAdmin } from '../auth/isAdmin';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { IsAdmin } from '../auth/guards/isAdmin';
 import { TaskDto } from './Task.dto';
 import { TaskService } from './task.service';
 

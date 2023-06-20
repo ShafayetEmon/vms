@@ -1,6 +1,6 @@
 import { Controller, Body, Get, Param, Patch, UseGuards, Delete, Request } from '@nestjs/common';
 import { VolunteerService } from './volunteer.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UpdateVolunteerDto } from './updateVolunteer.dto';
 
 @Controller('volunteers')
