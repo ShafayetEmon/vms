@@ -15,8 +15,8 @@ export class VolunteerTaskController {
 
   @Post()
   @UseGuards(IsAdmin)
-  async assignTaskToVolunteer(@Body() volunterTaskDto: VolunteerTaskDto, @Param('volunteerId') id) {
-    return this.volunteerTaskService.assignTaskToVolunteer(volunterTaskDto)
+  async assignTaskToVolunteer(@Body() volunterTaskDto: VolunteerTaskDto, @Param('volunteerId') volunteerId) {
+    return this.volunteerTaskService.assignTaskToVolunteer(volunterTaskDto, volunteerId)
   }
 
   @Delete(":taskId")
