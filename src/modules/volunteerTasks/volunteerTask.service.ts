@@ -38,31 +38,30 @@ export class VolunteerTaskService {
     return checkVolunteerTaskExist;
   }
 
-  async assignTaskToVolunteer(volunteerTaskDto) {
-    const { volunteerId, taskId } = volunteerTaskDto;
-    const checkVolunteerTaskExist = this.checkVolunteerTaskExist(
-      volunteerId,
-      taskId,
-    );
+  async assignTaskToVolunteer(volunteerTaskDto, id) {
+    const { taskId } = volunteerTaskDto;
+    const checkVolunteerTaskExist = this.checkVolunteerTaskExist(id, taskId);
 
-    if (checkVolunteerTaskExist)
+    if (!checkVolunteerTaskExist)
       throw new ConflictException(
         'This Task already assigned for this volunteer.',
       );
+    else {
+      const volunteerTask = this.volunteerTaskRepository.create({
+        volunteer: { id: id },
+        task: { id: volunteerTaskDto.taskId },
+      });
 
-    const volunteerTask = this.volunteerTaskRepository.create({
-      volunteer: { id: volunteerTaskDto.volunteerId },
-      task: { id: volunteerTaskDto.taskId },
-    });
+      const volunteerEmail = (
+        await this.volunteerService.getVolunteerById(id)
+      ).email;
+      const subject = 'You have been assigned to a task';
+      const text = `You have been assigned a task". Please check your dashboard for more details.`;
+      await sendEmail(volunteerEmail, subject, text);
 
-    const volunteerEmail = (
-      await this.volunteerService.getVolunteerById(volunteerTaskDto.id)
-    ).email;
-    const subject = 'assigned to a task';
-    const text = `You have been assigned a task". Please check your dashboard for more details.`;
-    await sendEmail(volunteerEmail, subject, text);
-
-    return this.volunteerTaskRepository.save(volunteerTask);
+      await this.volunteerTaskRepository.save(volunteerTask);
+      return { message: 'Task Assigned successfully' };
+    }
   }
 
   async removeTaskAssignment(volunteerId: number, taskId: number) {
